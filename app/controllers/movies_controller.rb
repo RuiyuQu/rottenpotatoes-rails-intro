@@ -7,7 +7,6 @@ class MoviesController < ApplicationController
   end
 
   def index
-    
     @movies = Movie.all
     @sort = nil
     
@@ -16,13 +15,19 @@ class MoviesController < ApplicationController
     if (@ratings=={})
       @ratings = Hash[@all_rating.map{|rating| [rating, rating]}]
     end
-    @movies = Movie.where(rating:@ratings.keys).order(@sort)
     
     if(params[:category] == 'title')
       @movies = Movie.order('title')
+      @sort = params[:category]||session[:category]
     elsif (params[:category] == 'release_date')
       @movies = Movie.order('release_date')
+      @sort = params[:category]||session[:category]
     end
+     
+    @movies = Movie.where(rating:@ratings.keys).order(@sort)
+
+    session[:sort] = @sort
+    session[:ratings] = @ratings
     
   end
 
