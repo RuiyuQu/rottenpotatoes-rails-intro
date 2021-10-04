@@ -8,7 +8,18 @@ class MoviesController < ApplicationController
 
   def index
     @movies = Movie.all
+    @sort = nil
+    
+    if(params[:category] == 'title')
+      @movies = Movie.order('title')
+    elsif (params[:category] == 'release_date')
+      @movies = Movie.order('release_date')
+    else #if nothing is selected then just output original display
+      @movies = Movie.all
+    end
+    
   end
+
 
   def new
     # default: render 'new' template
