@@ -7,19 +7,24 @@ class MoviesController < ApplicationController
   end
 
   def index
+    
     @movies = Movie.all
     @sort = nil
+    
+    @all_rating = ['G', 'PG', 'PG-13', 'R']
+    @ratings =  params[:ratings] || session[:ratings] || {}
+    if (@ratings=={})
+      @ratings = Hash[@all_rating.map{|rating| [rating, rating]}]
+    end
+    @movies = Movie.where(rating:@ratings.keys).order(@sort)
     
     if(params[:category] == 'title')
       @movies = Movie.order('title')
     elsif (params[:category] == 'release_date')
       @movies = Movie.order('release_date')
-    else #if nothing is selected then just output original display
-      @movies = Movie.all
     end
     
   end
-
 
   def new
     # default: render 'new' template
